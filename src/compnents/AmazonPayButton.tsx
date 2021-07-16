@@ -9,7 +9,7 @@ export const AmazonPayButton: React.FC = () => {
   };
 
   useEffect(() => {
-    window["showButton"](onError);
+    // window["showButton"](onError);
   }, []);
 
   return <div id="AmazonPayButton"></div>;

@@ -25,72 +25,94 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
-
-    <script
-      async="async"
-      src="https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js"
-    ></script>
-    <script type="text/javascript">
-      //オーダーID
-      window.orderReferenceId;
-      //エラー
-      window.amazonPayError;
-
-      window.onAmazonLoginReady = function () {
-        amazon.Login.setClientId("<You're Client ID>");
-      };
-      window.onAmazonPaymentsReady = function () {
-        self.showAddressBookWidget();
-      };
-      window.onAmazonPaymentsReady = function () {
-        window.showButton = function (onError) {
-          var authRequest;
-
-          OffAmazonPayments.Button("AmazonPayButton", "<You're SellerId>", {
-            type: "PwA",
-            color: "Gold",
-            size: "large",
-            language: "jp",
-            authorization: function () {
-              loginOptions = {
-                scope:
-                  "profile postal_code payments:widget payments:shipping_address",
-                popup: true,
-                interactive: "always",
-              };
-              authRequest = amazon.Login.authorize(
-                loginOptions,
-                "%PUBLIC_URL%/pay-with-amazon/"
-              );
+    <!-- ここからAmazonPayスクリプト -->
+    <div id="AmazonPayButton"></div>
+    <script src="https://static-fe.payments-amazon.com/checkout.js"></script>
+    <script type="text/javascript" charset="utf-8">
+      amazon.Pay.renderButton("#AmazonPayButton", {
+        merchantId: "A2EWTHDYAZGZAL",
+        ledgerCurrency: "JPY",
+        sandbox: true,
+        checkoutLanguage: "ja_JP",
+        productType: "PayAndShip",
+        placement: "Cart",
+        buttonColor: "DarkGray",
+        createCheckoutSessionConfig: {
+          payloadJSON: {
+            webCheckoutDetails: {
+              checkoutReviewReturnUrl:
+                "http://localhost:3000/ReviewCheckoutPage",
             },
-            onError: function (error) {
-              onError(error_message);
+            storeId:
+              "amzn1.application-oa2-client.597b1cd0f0d34c2980c703f8fecc2c1f",
+            scopes: ["name", "email", "phoneNumber", "billingAddress"],
+            deliverySpecifications: {
+              specialRestrictions: ["RestrictPOBoxes"],
+              addressRestrictions: {
+                type: "Allowed",
+                restrictions: {
+                  JP: {
+                    statesOrRegions: [
+                      "北海道",
+                      "青森県",
+                      "岩手県",
+                      "宮城県",
+                      "秋田県",
+                      "山形県",
+                      "福島県",
+                      "茨城県",
+                      "栃木県",
+                      "群馬県",
+                      "埼玉県",
+                      "千葉県",
+                      "東京都",
+                      "神奈川県",
+                      "新潟県",
+                      "富山県",
+                      "石川県",
+                      "福井県",
+                      "山梨県",
+                      "長野県",
+                      "岐阜県",
+                      "静岡県",
+                      "愛知県",
+                      "三重県",
+                      "滋賀県",
+                      "京都府",
+                      "大阪府",
+                      "兵庫県",
+                      "奈良県",
+                      "和歌山県",
+                      "鳥取県",
+                      "島根県",
+                      "岡山県",
+                      "広島県",
+                      "山口県",
+                      "徳島県",
+                      "香川県",
+                      "愛媛県",
+                      "高知県",
+                      "福岡県",
+                      "佐賀県",
+                      "長崎県",
+                      "熊本県",
+                      "大分県",
+                      "宮崎県",
+                      "鹿児島県",
+                      "沖縄県",
+                    ],
+                  },
+                },
+              },
             },
-          });
-        };
-        window.logout = function () {
-          amazon.Login.logout();
-        };
-
-        window.showWalletWidget = function () {
-          new OffAmazonPayments.Widgets.Wallet({
-            sellerId: "<You're SellerId>",
-            onReady: function (billingAgreement) {},
-            onOrderReferenceCreate: function (orderReference) {
-              window.orderReferenceId =
-                orderReference.getAmazonOrderReferenceId();
-            },
-            design: {
-              designMode: "responsive",
-            },
-            onPaymentSelect: function (billingAgreement) {},
-            onError: function (error) {
-              window.amazonPayError = getErrorCode();
-            },
-          }).bind("walletWidgetDiv");
-        };
-      };
+          },
+          signature:
+            "YagJOQKzUYAVCMuqyVqfUYCk9IVW6RhxhJRz2D/LkYFH5jW78l4CgPUA/ylQLezFegfh7Szde6fVRp2rmJjmGjDvNNtBeoQ7dcya80BmsfZDVJ7h0mbLqvOPf4wKEuZzvgnGghQwgLd5c7xQkw6yVQAQGikmVqyZlCThes2T6Rch1msJ6R/NMD3C4QvBb/9fHy0jXxzZOTJrr55r+y/7MhAdAE5mqZsVA+JUYnrzxyG4cloiCB1bML5lHBP47vLCy5rU8eLK03NsY8eQjCT2whLnC6JTX0UlrngoQ71sNGNJ1FKZKZl8+VQyd9ocOZ/twNGOowxKnd+AtiTW1R9uaw==",
+          publicKeyId: "SANDBOX-AEAE6JNIRQOTLNNVCAG6YNP2",
+        },
+      });
     </script>
+    <!-- ここまでAmazonPayスクリプト -->
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
