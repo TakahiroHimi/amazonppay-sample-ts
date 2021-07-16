@@ -25,19 +25,75 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>React App</title>
+
+    <script
+      async="async"
+      src="https://static-fe.payments-amazon.com/OffAmazonPayments/jp/sandbox/lpa/js/Widgets.js"
+    ></script>
+    <script type="text/javascript">
+      //オーダーID
+      window.orderReferenceId;
+      //エラー
+      window.amazonPayError;
+
+      window.onAmazonLoginReady = function () {
+        amazon.Login.setClientId("<You're Client ID>");
+      };
+      window.onAmazonPaymentsReady = function () {
+        self.showAddressBookWidget();
+      };
+      window.onAmazonPaymentsReady = function () {
+        window.showButton = function (onError) {
+          var authRequest;
+
+          OffAmazonPayments.Button("AmazonPayButton", "<You're SellerId>", {
+            type: "PwA",
+            color: "Gold",
+            size: "large",
+            language: "jp",
+            authorization: function () {
+              loginOptions = {
+                scope:
+                  "profile postal_code payments:widget payments:shipping_address",
+                popup: true,
+                interactive: "always",
+              };
+              authRequest = amazon.Login.authorize(
+                loginOptions,
+                "%PUBLIC_URL%/pay-with-amazon/"
+              );
+            },
+            onError: function (error) {
+              onError(error_message);
+            },
+          });
+        };
+        window.logout = function () {
+          amazon.Login.logout();
+        };
+
+        window.showWalletWidget = function () {
+          new OffAmazonPayments.Widgets.Wallet({
+            sellerId: "<You're SellerId>",
+            onReady: function (billingAgreement) {},
+            onOrderReferenceCreate: function (orderReference) {
+              window.orderReferenceId =
+                orderReference.getAmazonOrderReferenceId();
+            },
+            design: {
+              designMode: "responsive",
+            },
+            onPaymentSelect: function (billingAgreement) {},
+            onError: function (error) {
+              window.amazonPayError = getErrorCode();
+            },
+          }).bind("walletWidgetDiv");
+        };
+      };
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
